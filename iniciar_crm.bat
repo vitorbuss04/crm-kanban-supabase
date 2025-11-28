@@ -1,0 +1,3 @@
+@echo off
+echo Iniciando o CRM Minimalista...
+npm run dev

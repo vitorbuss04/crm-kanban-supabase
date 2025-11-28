@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal CRM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Clientes</h1>
+            <button id="btn-new-client" class="btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                Novo Cliente
+            </button>
+        </header>
+
+        <main class="kanban-container">
+            <div class="kanban-board">
+                <div class="kanban-column" data-status="Novo">
+                    <div class="column-header status-novo">Novo</div>
+                    <div class="column-content" id="col-novo"></div>
+                </div>
+                <div class="kanban-column" data-status="Em Contato">
+                    <div class="column-header status-em-contato">Em Contato</div>
+                    <div class="column-content" id="col-em-contato"></div>
+                </div>
+                <div class="kanban-column" data-status="Proposta">
+                    <div class="column-header status-proposta">Proposta</div>
+                    <div class="column-content" id="col-proposta"></div>
+                </div>
+                <div class="kanban-column" data-status="Fechado">
+                    <div class="column-header status-fechado">Fechado</div>
+                    <div class="column-content" id="col-fechado"></div>
+                </div>
+                <div class="kanban-column" data-status="Perdido">
+                    <div class="column-header status-perdido">Perdido</div>
+                    <div class="column-content" id="col-perdido"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Novo Cliente</h2>
+                <button id="btn-close-modal" class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+            <form id="form-new-client">
+                <div class="form-group">
+                    <label for="client-name">Nome</label>
+                    <input type="text" id="client-name" name="name" placeholder="Ex: João Silva" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-phone">WhatsApp / Telefone</label>
+                    <input type="tel" id="client-phone" name="phone" placeholder="Ex: 11 99999-9999">
+                </div>
+                <div class="form-group">
+                    <label for="client-status">Status</label>
+                    <select id="client-status" name="status">
+                        <option value="Novo">Novo</option>
+                        <option value="Em Contato">Em Contato</option>
+                        <option value="Proposta">Proposta</option>
+                        <option value="Fechado">Fechado</option>
+                        <option value="Perdido">Perdido</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="client-notes">Notas</label>
+                    <textarea id="client-notes" name="notes" rows="3" placeholder="Detalhes importantes..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="btn-cancel" class="btn-secondary">Cancelar</button>
+                    <button type="submit" id="btn-submit" class="btn-primary">Adicionar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alert/Confirm Modal -->
+    <div id="alert-modal" class="modal-overlay hidden" style="z-index: 2000;">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 id="alert-title" style="font-size: 1.25rem;">Aviso</h2>
+            </div>
+            <div style="padding: 1rem 0; color: var(--text-secondary);" id="alert-message">
+                Mensagem aqui...
+            </div>
+            <div class="modal-actions" style="justify-content: center;">
+                <button id="btn-alert-cancel" class="btn-secondary hidden">Cancelar</button>
+                <button id="btn-alert-ok" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
