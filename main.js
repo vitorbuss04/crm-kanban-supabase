@@ -119,10 +119,10 @@ function showAlert(message, title = 'Aviso') {
         alertTitle.textContent = title
         alertMessage.textContent = message
         btnAlertCancel.classList.add('hidden')
-        alertModal.classList.remove('hidden')
+        alertModal.classList.add('is-visible')
 
         btnAlertOk.onclick = () => {
-            alertModal.classList.add('hidden')
+            alertModal.classList.remove('is-visible')
             resolve(true)
         }
     })
@@ -133,15 +133,15 @@ function showConfirm(message, title = 'Confirmação') {
         alertTitle.textContent = title
         alertMessage.textContent = message
         btnAlertCancel.classList.remove('hidden')
-        alertModal.classList.remove('hidden')
+        alertModal.classList.add('is-visible')
 
         btnAlertOk.onclick = () => {
-            alertModal.classList.add('hidden')
+            alertModal.classList.remove('is-visible')
             resolve(true)
         }
 
         btnAlertCancel.onclick = () => {
-            alertModal.classList.add('hidden')
+            alertModal.classList.remove('is-visible')
             resolve(false)
         }
     })
@@ -372,7 +372,7 @@ function getDragAfterElement(container, y) {
 
 function toggleModal(show, client = null) {
     if (show) {
-        modalOverlay.classList.remove('hidden')
+        modalOverlay.classList.add('is-visible')
 
         if (client) {
             document.getElementById('modal-title').textContent = 'Editar Cliente'
@@ -389,7 +389,7 @@ function toggleModal(show, client = null) {
             document.getElementById('btn-submit').textContent = 'Adicionar Cliente'
         }
     } else {
-        modalOverlay.classList.add('hidden')
+        modalOverlay.classList.remove('is-visible')
         formNewClient.reset()
         delete formNewClient.dataset.id
     }
