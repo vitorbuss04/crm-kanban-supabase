@@ -40,6 +40,15 @@ function setupDragAndDrop() {
     kanbanColumns.forEach(column => {
         column.addEventListener('dragover', handleDragOver)
         column.addEventListener('drop', handleDrop)
+        column.addEventListener('dragleave', (e) => {
+            const column = e.target.closest('.kanban-column')
+            if (column) {
+                const dropZone = column.querySelector('.drop-zone')
+                const indicator = column.querySelector('.target-indicator')
+                if (dropZone) dropZone.classList.remove('active')
+                if (indicator) indicator.classList.remove('active')
+            }
+        })
     })
 }
 
@@ -62,6 +71,14 @@ function handleDragOver(e) {
 
     const column = e.target.closest('.kanban-column')
     if (!column || !draggedClient) return
+
+    // Remove active state from other columns
+    document.querySelectorAll('.kanban-column').forEach(col => {
+        if (col !== column) {
+            col.querySelector('.drop-zone')?.classList.remove('active')
+            col.querySelector('.target-indicator')?.classList.remove('active')
+        }
+    })
 
     const content = column.querySelector('.column-content')
     const dropZone = content.querySelector('.drop-zone')
@@ -89,7 +106,7 @@ function handleDragOver(e) {
             const lastRect = lastCard.getBoundingClientRect()
             indicator.style.top = (lastRect.bottom - rect.top + 8) + 'px'
         } else {
-            indicator.style.top = '0px'
+            indicator.style.top = '8px'
         }
     }
 
@@ -238,14 +255,29 @@ function createClientCard(client) {
 }
 
 function renderClients(clientsToRender) {
-    Object.values(columns).forEach(col => col.innerHTML = '')
+    Object.values(columns).forEach(col => {
+        const content = col.querySelector('.column-content') || col;
+        content.innerHTML = ''; // Clear only the content area
+        // Re-add dropzone and indicator if they were cleared
+        if (!content.querySelector('.drop-zone')) {
+            const dropZone = document.createElement('div');
+            dropZone.className = 'drop-zone';
+            content.appendChild(dropZone);
+        }
+        if (!content.querySelector('.target-indicator')) {
+            const indicator = document.createElement('div');
+            indicator.className = 'target-indicator';
+            content.appendChild(indicator);
+        }
+    });
 
     clientsToRender.forEach(client => {
         const card = createClientCard(client)
         const status = client.status || 'Novo'
 
         if (columns[status]) {
-            columns[status].appendChild(card)
+            const content = columns[status].querySelector('.column-content') || columns[status];
+            content.appendChild(card)
         }
     })
 }
@@ -259,27 +291,18 @@ async function handleDrop(e) {
         const clientId = draggedClient.dataset.id
         const content = column.querySelector('.column-content')
 
-        const afterElement = getDragAfterElement(content, e.clientY)
+        const afterElementResult = getDragAfterElement(content, e.clientY)
+        const afterElement = afterElementResult.element
 
         let newPosition
-        const cards = Array.from(content.querySelectorAll('.client-card:not(.dragging)'))
 
-        if (cards.length === 0) {
-            newPosition = 1000
-        } else if (afterElement == null) {
-            const lastCard = cards[cards.length - 1]
-            const lastCardId = lastCard.dataset.id
-            const lastClient = clients.find(c => c.id === lastCardId)
-            newPosition = (lastClient?.position || 0) + 1000
-            content.appendChild(draggedClient)
-        } else {
+        if (afterElement) {
             const nextCardId = afterElement.dataset.id
             const nextClient = clients.find(c => c.id === nextCardId)
             const nextPos = nextClient?.position || 0
 
             const prevCard = afterElement.previousElementSibling
             let prevPos = 0
-
             if (prevCard && prevCard !== draggedClient) {
                 const prevCardId = prevCard.dataset.id
                 const prevClient = clients.find(c => c.id === prevCardId)
@@ -287,9 +310,20 @@ async function handleDrop(e) {
             } else if (!prevCard) {
                 prevPos = nextPos - 2000
             }
-
+            
             newPosition = (prevPos + nextPos) / 2
             content.insertBefore(draggedClient, afterElement)
+        } else {
+            const cards = Array.from(content.querySelectorAll('.client-card:not(.dragging)'))
+            if (cards.length > 0) {
+                const lastCard = cards[cards.length - 1]
+                const lastCardId = lastCard.dataset.id
+                const lastClient = clients.find(c => c.id === lastCardId)
+                newPosition = (lastClient?.position || 0) + 1000
+            } else {
+                newPosition = 1000
+            }
+            content.appendChild(draggedClient)
         }
 
         try {
