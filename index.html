@@ -12,7 +12,27 @@
 </head>
 
 <body>
-    <div class="app-container">
+    <div id="auth-container" class="auth-container">
+        <div class="auth-form-wrapper">
+            <h1 class="auth-title">Bem-vindo ao CRM</h1>
+            <p class="auth-subtitle">Acesse sua conta para continuar.</p>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="auth-email">Email</label>
+                    <input type="email" id="auth-email" required autocomplete="email" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="auth-password">Senha</label>
+                    <input type="password" id="auth-password" required autocomplete="current-password" placeholder="••••••••">
+                </div>
+                <div id="auth-error" class="auth-error"></div>
+                <button type="submit" class="btn-primary auth-button">Entrar</button>
+            </form>
+            <p class="auth-toggle">Não tem uma conta? <a href="#" id="auth-toggle-link">Cadastre-se</a></p>
+        </div>
+    </div>
+
+    <div id="app-container" class="app-container hidden">
         <header class="app-header">
             <h1>Clientes</h1>
             <div class="header-actions">
@@ -33,6 +53,7 @@
                     </svg>
                     Novo Cliente
                 </button>
+                <button id="btn-logout" class="btn-secondary">Sair</button>
             </div>
         </header>
 
