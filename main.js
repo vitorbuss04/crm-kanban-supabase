@@ -481,17 +481,29 @@ function handleSearch() {
 window.deleteClient = async (id) => {
     const confirmed = await showConfirm('Tem certeza que deseja excluir este cliente?')
     if (confirmed) {
+        const card = document.querySelector(`.client-card[data-id="${id}"]`);
+
+        // Optimistically start the exit animation
+        if (card) {
+            card.classList.add('card-exiting');
+            card.addEventListener('transitionend', () => card.remove(), { once: true });
+        }
+
         try {
             const { error } = await supabase
                 .from('clients')
                 .delete()
                 .eq('id', id)
 
-            if (error) throw error
-            loadClients()
+            if (error) throw error;
+
+            // Update local state on success
+            clients = clients.filter(c => c.id !== id);
         } catch (error) {
             console.error('Error deleting client:', error)
             showAlert('Erro ao excluir cliente.', 'Erro')
+            // On error, restore the UI from the database
+            loadClients();
         }
     }
 }
