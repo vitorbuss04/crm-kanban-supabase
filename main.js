@@ -29,6 +29,7 @@ const alertTitle = document.getElementById('alert-title')
 const alertMessage = document.getElementById('alert-message')
 const btnAlertOk = document.getElementById('btn-alert-ok')
 const btnAlertCancel = document.getElementById('btn-alert-cancel')
+const searchInput = document.getElementById('search-input')
 
 const STATUS_FLOW = ['Novo', 'Em Contato', 'Proposta', 'Fechado']
 
@@ -141,7 +142,7 @@ async function loadClients() {
         if (error) throw error
 
         clients = data
-        renderClients()
+        renderClients(clients)
     } catch (error) {
         console.error('Error loading clients:', error)
         showAlert('Erro ao carregar clientes. Verifique o console.', 'Erro')
@@ -236,10 +237,10 @@ function createClientCard(client) {
     return card
 }
 
-function renderClients() {
+function renderClients(clientsToRender) {
     Object.values(columns).forEach(col => col.innerHTML = '')
 
-    clients.forEach(client => {
+    clientsToRender.forEach(client => {
         const card = createClientCard(client)
         const status = client.status || 'Novo'
 
@@ -309,7 +310,7 @@ async function handleDrop(e) {
             }
 
             clients.sort((a, b) => (a.position || 0) - (b.position || 0))
-            renderClients()
+            handleSearch()
 
         } catch (error) {
             console.error('Error updating status/position:', error)
@@ -421,6 +422,25 @@ function setupEventListeners() {
     })
 
     formNewClient.addEventListener('submit', handleNewClient)
+    searchInput.addEventListener('input', handleSearch)
+}
+
+function handleSearch() {
+    const searchTerm = searchInput.value.toLowerCase().trim()
+
+    if (!searchTerm) {
+        renderClients(clients)
+        return
+    }
+
+    const filteredClients = clients.filter(client => {
+        const name = client.name?.toLowerCase() || ''
+        const phone = client.phone?.toLowerCase() || ''
+        const notes = client.notes?.toLowerCase() || ''
+        return name.includes(searchTerm) || phone.includes(searchTerm) || notes.includes(searchTerm)
+    })
+
+    renderClients(filteredClients)
 }
 
 // Global functions
@@ -470,7 +490,7 @@ window.moveClientStatus = async (id, currentStatus, direction) => {
 
             const client = clients.find(c => c.id === id)
             if (client) client.status = nextStatus
-            renderClients()
+            handleSearch()
 
         } catch (error) {
             console.error('Error moving status:', error)
