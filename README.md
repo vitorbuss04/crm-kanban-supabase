@@ -49,22 +49,37 @@ npm run dev
 Execute o seguinte SQL no Supabase para criar a tabela:
 
 ```sql
+-- Create the clients table
 create table clients (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade,
   name text not null,
   phone text,
   status text default 'Novo',
   notes text,
-  position integer default 0,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+  position double precision default 0,
+  created_at timestamp with time zone default now() not null
 );
 
--- Enable RLS
+-- Enable Row Level Security (RLS)
 alter table clients enable row level security;
 
--- Create policy (ajuste conforme necessidade)
-create policy "Enable all access for authenticated users" on clients
-  for all using (true);
+-- Create secure RLS policies
+-- 1. Users can view their own clients
+create policy "Users can view their own clients" on clients
+  for select using (auth.uid() = user_id);
+
+-- 2. Users can insert new clients for themselves
+create policy "Users can insert their own clients" on clients
+  for insert with check (auth.uid() = user_id);
+
+-- 3. Users can update their own clients
+create policy "Users can update their own clients" on clients
+  for update using (auth.uid() = user_id);
+
+-- 4. Users can delete their own clients
+create policy "Users can delete their own clients" on clients
+  for delete using (auth.uid() = user_id);
 ```
 
 ## 🎯 Como Usar
