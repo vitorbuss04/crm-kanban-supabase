@@ -44,6 +44,13 @@ const btnAlertOk = document.getElementById('btn-alert-ok')
 const btnAlertCancel = document.getElementById('btn-alert-cancel')
 const searchInput = document.getElementById('search-input')
 
+// Info Modal Elements
+const infoModalOverlay = document.getElementById('info-modal-overlay');
+const btnCloseInfoModal = document.getElementById('btn-close-info-modal');
+const infoModalContent = document.getElementById('info-modal-content');
+const btnInfoModalOk = document.getElementById('btn-info-modal-ok');
+
+
 const STATUS_FLOW = ['Novo', 'Em Contato', 'Proposta', 'Fechado']
 
 // --- AUTH FUNCTIONS ---
@@ -280,6 +287,14 @@ function createClientCard(client) {
         cardActions.appendChild(nextButton);
     }
 
+    const infoButton = document.createElement('button');
+    infoButton.className = 'btn-action info';
+    infoButton.title = 'Ver Detalhes';
+    infoButton.dataset.action = 'info';
+    infoButton.dataset.id = client.id;
+    infoButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    cardActions.appendChild(infoButton);
+
     const editButton = document.createElement('button');
     editButton.className = 'btn-action edit';
     editButton.title = 'Editar';
@@ -306,6 +321,7 @@ function createClientCard(client) {
             const id = btn.dataset.id;
             if (action === 'edit') { window.editClient(id); }
             else if (action === 'delete') { window.deleteClient(id); }
+            else if (action === 'info') { window.showClientInfo(id); }
             else if (action === 'next' || action === 'prev') {
                 const status = btn.dataset.status;
                 window.moveClientStatus(id, status, action);
@@ -435,6 +451,36 @@ function toggleModal(show, client = null) {
     }
 }
 
+function toggleInfoModal(show, client = null) {
+    if (show && client) {
+        infoModalContent.innerHTML = `
+            <div class="info-item">
+                <span class="info-item-label">Nome</span>
+                <span class="info-item-value">${client.name}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-item-label">Email</span>
+                <span class="info-item-value">${client.email || 'Não informado'}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-item-label">Telefone</span>
+                <span class="info-item-value">${client.phone || 'Não informado'}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-item-label">Status</span>
+                <span class="info-item-value">${client.status}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-item-label">Notas</span>
+                <span class="info-item-value notes">${client.notes || 'Nenhuma nota'}</span>
+            </div>
+        `;
+        infoModalOverlay.classList.add('is-visible');
+    } else {
+        infoModalOverlay.classList.remove('is-visible');
+    }
+}
+
 async function handleNewClient(e) {
     e.preventDefault()
     const formData = new FormData(formNewClient)
@@ -479,6 +525,15 @@ function setupAppEventListeners() {
     })
     formNewClient.addEventListener('submit', handleNewClient)
     searchInput.addEventListener('input', handleSearch)
+
+    // Info Modal Listeners
+    btnCloseInfoModal.addEventListener('click', () => toggleInfoModal(false));
+    btnInfoModalOk.addEventListener('click', () => toggleInfoModal(false));
+    infoModalOverlay.addEventListener('click', (e) => {
+        if (e.target === infoModalOverlay) {
+            toggleInfoModal(false);
+        }
+    });
 }
 
 function handleSearch() {
@@ -523,6 +578,13 @@ window.editClient = (id) => {
         toggleModal(true, client)
     }
 }
+
+window.showClientInfo = (id) => {
+    const client = clients.find(c => c.id === id);
+    if (client) {
+        toggleInfoModal(true, client);
+    }
+};
 
 window.moveClientStatus = async (id, currentStatus, direction) => {
     const currentIndex = STATUS_FLOW.indexOf(currentStatus)
