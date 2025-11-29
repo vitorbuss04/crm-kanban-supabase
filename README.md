@@ -1,4 +1,4 @@
-# CRM Kanban - Supabase
+# Simple CRM
 
 Sistema CRM moderno com Kanban board integrado ao Supabase para gerenciamento de clientes.
 

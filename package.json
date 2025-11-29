@@ -1,5 +1,5 @@
 {
-  "name": "crm",
+  "name": "simple-crm",
   "version": "1.0.0",
   "description": "Um sistema simples e direto para gerenciamento de relacionamento com clientes (CRM), focado em micro e pequenos negócios.",
   "main": "app.js",
