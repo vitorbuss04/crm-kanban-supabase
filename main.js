@@ -222,26 +222,35 @@ function createClientCard(client) {
     card.draggable = true;
     card.dataset.id = client.id;
 
-    // Client Header
     const clientHeader = document.createElement('div');
     clientHeader.className = 'client-header';
     const clientName = document.createElement('div');
     clientName.className = 'client-name';
     clientName.textContent = client.name;
     clientHeader.appendChild(clientName);
+    card.appendChild(clientHeader);
 
-    // Client Info (Phone)
-    const clientInfo = document.createElement('div');
-    clientInfo.className = 'client-info';
-    clientInfo.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 16.92V19.92C22.0011 20.1986 21.9441 20.4742 21.8325 20.7294C21.7209 20.9846 21.5573 21.2137 21.3521 21.4019C21.1468 21.5901 20.9046 21.733 20.6411 21.8212C20.3776 21.9093 20.0987 21.9409 19.823 21.913C16.7667 21.5816 13.8291 20.5361 11.23 18.86C8.81665 17.3276 6.78643 15.3216 5.23 12.94C3.53501 10.3167 2.48391 7.35128 2.16 4.28C2.13222 4.0036 2.16434 3.72369 2.25424 3.45906C2.34413 3.19443 2.48974 2.95123 2.68134 2.74591C2.87293 2.54059 3.10609 2.37789 3.36531 2.26868C3.62453 2.15947 3.90387 2.10623 4.185 2.11H7.185C7.68334 2.10667 8.16462 2.28994 8.53677 2.62464C8.90892 2.95934 9.14856 3.42436 9.21 3.92C9.32356 4.83994 9.55169 5.74306 9.89 6.61C10.0381 6.98764 10.0703 7.40071 9.98256 7.79782C9.89481 8.19493 9.69106 8.55837 9.397 8.842L8.127 10.112C9.55166 12.6178 11.6292 14.6954 14.135 16.12L15.405 14.85C15.6886 14.5559 16.0521 14.3522 16.4492 14.2644C16.8463 14.1767 17.2594 14.2089 17.637 14.357C18.5039 14.6953 19.4071 14.9234 20.327 15.037C20.8266 15.0993 21.2942 15.3432 21.6296 15.7196C21.965 16.096 22.1462 16.5807 22.14 17.08V16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-    clientInfo.appendChild(document.createTextNode(client.phone || 'Sem telefone'));
+    if (client.email) {
+        const clientEmailInfo = document.createElement('div');
+        clientEmailInfo.className = 'client-info';
+        clientEmailInfo.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        clientEmailInfo.appendChild(document.createTextNode(client.email));
+        card.appendChild(clientEmailInfo);
+    }
 
-    // Client Notes
+    if (client.phone) {
+        const clientPhoneInfo = document.createElement('div');
+        clientPhoneInfo.className = 'client-info';
+        clientPhoneInfo.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 16.92V19.92C22.0011 20.1986 21.9441 20.4742 21.8325 20.7294C21.7209 20.9846 21.5573 21.2137 21.3521 21.4019C21.1468 21.5901 20.9046 21.733 20.6411 21.8212C20.3776 21.9093 20.0987 21.9409 19.823 21.913C16.7667 21.5816 13.8291 20.5361 11.23 18.86C8.81665 17.3276 6.78643 15.3216 5.23 12.94C3.53501 10.3167 2.48391 7.35128 2.16 4.28C2.13222 4.0036 2.16434 3.72369 2.25424 3.45906C2.34413 3.19443 2.48974 2.95123 2.68134 2.74591C2.87293 2.54059 3.10609 2.37789 3.36531 2.26868C3.62453 2.15947 3.90387 2.10623 4.185 2.11H7.185C7.68334 2.10667 8.16462 2.28994 8.53677 2.62464C8.90892 2.95934 9.14856 3.42436 9.21 3.92C9.32356 4.83994 9.55169 5.74306 9.89 6.61C10.0381 6.98764 10.0703 7.40071 9.98256 7.79782C9.89481 8.19493 9.69106 8.55837 9.397 8.842L8.127 10.112C9.55166 12.6178 11.6292 14.6954 14.135 16.12L15.405 14.85C15.6886 14.5559 16.0521 14.3522 16.4492 14.2644C16.8463 14.1767 17.2594 14.2089 17.637 14.357C18.5039 14.6953 19.4071 14.9234 20.327 15.037C20.8266 15.0993 21.2942 15.3432 21.6296 15.7196C21.965 16.096 22.1462 16.5807 22.14 17.08V16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        clientPhoneInfo.appendChild(document.createTextNode(client.phone));
+        card.appendChild(clientPhoneInfo);
+    }
+
     const clientNotes = document.createElement('div');
     clientNotes.className = 'client-notes';
     clientNotes.textContent = client.notes || '';
+    card.appendChild(clientNotes);
 
-    // Card Actions
     const cardActions = document.createElement('div');
     cardActions.className = 'card-actions';
 
@@ -287,10 +296,6 @@ function createClientCard(client) {
     deleteButton.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     cardActions.appendChild(deleteButton);
 
-    // Append all parts to card
-    card.appendChild(clientHeader);
-    card.appendChild(clientInfo);
-    card.appendChild(clientNotes);
     card.appendChild(cardActions);
 
     const actions = card.querySelectorAll('.btn-action');
@@ -411,6 +416,7 @@ function toggleModal(show, client = null) {
         if (client) {
             document.getElementById('modal-title').textContent = 'Editar Cliente'
             document.getElementById('client-name').value = client.name
+            document.getElementById('client-email').value = client.email || ''
             document.getElementById('client-phone').value = client.phone || ''
             document.getElementById('client-status').value = client.status || 'Novo'
             document.getElementById('client-notes').value = client.notes || ''
@@ -435,6 +441,7 @@ async function handleNewClient(e) {
     const id = formNewClient.dataset.id
     const clientData = {
         name: formData.get('name'),
+        email: formData.get('email'),
         phone: formData.get('phone'),
         status: formData.get('status'),
         notes: formData.get('notes')
@@ -482,9 +489,10 @@ function handleSearch() {
     }
     const filteredClients = clients.filter(client => {
         const name = client.name?.toLowerCase() || ''
+        const email = client.email?.toLowerCase() || ''
         const phone = client.phone?.toLowerCase() || ''
         const notes = client.notes?.toLowerCase() || ''
-        return name.includes(searchTerm) || phone.includes(searchTerm) || notes.includes(searchTerm)
+        return name.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm) || notes.includes(searchTerm)
     })
     renderClients(filteredClients)
 }
